@@ -1,111 +1,94 @@
-createCanvas();
-random();
-point();
+function sketch2(p) {
+  p.setup = function () {
+    p.createCanvas(p.windowWidth, p.windowHeight);
+    p.frameRate(60);
+    p.noFill();
+  };
 
-function setup() {
-    createCanvas(1080, 1080);
-    frameRate(60);
-    noFill();
-}
+  p.draw = function () {
+    const W = p.width, H = p.height;
+    p.background(245, 245, 245);
 
-function draw() {
-    background(245, 245, 245);
-
-    // background
-    stroke(0);
-    var standardDeviation = 400;
-    for (var i = 0; i < 5000; i++) {
-        var backDist = randomGaussian(0, standardDeviation);
-        var b = createVector(backDist, random(-height, height));
-        point(b.x, b.y);
+    // background gaussian scatter
+    p.stroke(0);
+    for (let i = 0; i < 5000; i++) {
+      p.point(p.randomGaussian(W / 2, 400), p.random(0, H));
     }
 
-    // circle
-    stroke(100, 75, 50);
-    translate(width / 5, height / 4);
-    for (var i = 0; i < 5000; i++) {
-        var cirDist = (max(random(2, 0), random(0, 0)) * width) / 8;
-        var angle = random(2, PI * 3);
-        var c = createVector(cos(angle), sin(angle));
-        c.mult(cirDist);
-        point(c.x, c.y);
+    p.push();
+    p.translate(W / 5, H / 4);
+
+    // circle scatter
+    p.stroke(100, 75, 50);
+    for (let i = 0; i < 5000; i++) {
+      const r = Math.max(p.random(2, 0), p.random(0, W / 8));
+      const a = p.random(2, p.PI * 3);
+      p.point(Math.cos(a) * r, Math.sin(a) * r);
     }
 
     // top line
-    stroke(0, 29, 125);
-    for (var i = 0; i < 500; i++) {
-        var lineX = random(90, 500);
-        var lineY = random(20 - 10, 15 + 30);
-        point(lineX, lineY);
+    p.stroke(0, 29, 125);
+    for (let i = 0; i < 500; i++) {
+      p.point(p.random(90, 500), p.random(10, 45));
     }
 
     // bottom line
-    for (var i = 0; i < 8000; i++) {
-        var lineX = random(10, 800);
-        var lineY = random(500 - 50, 300 + 10);
-        point(lineX, lineY);
+    for (let i = 0; i < 8000; i++) {
+      p.point(p.random(10, 800), p.random(260, 510));
     }
 
     // left & right lines
-    for (var i = 0; i < 8000; i++) {
-        var leftLineX = random(50 - 10, 100 + 10);
-        var leftLineY = max(random(50, 100), random(10, 1000));
-        point(leftLineX, leftLineY);
-
-        var rightLineX = random(200 - 10, 340 + 10);
-        var rightLineY = max(random(10, 330), random(80, 200));
-        point(rightLineX, rightLineY);
-        
-        var rightLineX = random(50 - 10, 50 + 10);
-        var rightLineY = max(random(10, 10), random(500, 200));
-        point(rightLineX, rightLineY);
+    for (let i = 0; i < 8000; i++) {
+      p.point(p.random(40,  110), Math.max(p.random(50,  100), p.random(10, 1000)));
+      p.point(p.random(190, 350), Math.max(p.random(10,  330), p.random(80,  200)));
+      p.point(p.random(40,   60), Math.max(p.random(10,   10), p.random(200, 500)));
     }
 
-    // square
-    stroke(255, 179, 15);
-    for (var i = 0; i < 60000; i++) {
-        var sqX = random(50, 800);
-        var sqY = random(80, 230);
-        push();
-        rotate(-PI / 8);
-        point(sqX, sqY);
-        pop();
+    // square — rotated yellow slab
+    p.push();
+    p.stroke(255, 179, 15);
+    p.rotate(-p.PI / 8);
+    for (let i = 0; i < 60000; i++) {
+      p.point(p.random(50, 800), p.random(80, 230));
     }
+    p.pop();
 
     // square shadow
-    stroke(126, 126, 126);
-    for (var i = 0; i < 3000; i++) {
-        var sqBX = min(random(50, 800), random(50, 800));
-        var sqBY = max(random(80, 150), random(80, 230));
-        push();
-        rotate(-PI / 8);
-        point(sqBX, sqBY);
-        pop();
+    p.push();
+    p.stroke(126, 126, 126);
+    p.rotate(-p.PI / 8);
+    for (let i = 0; i < 3000; i++) {
+      p.point(
+        Math.min(p.random(50, 800), p.random(50, 800)),
+        Math.max(p.random(80, 150), p.random(80, 230))
+      );
     }
+    p.pop();
+
+    p.pop(); // end translate(W/5, H/4)
 
     // wave black
-    push();
-    stroke(2);
-    translate(1, height / 2 + 10);
-    var amp = 20;
-    for (var i = 0; i < 8000; i++) {
-        var waveX = random(0, width);
-        var waveY = cos((waveX / width) * PI * 80) * amp;
-        waveY += random(50, 30);
-        point(waveX, waveY);
+    p.push();
+    p.stroke(2);
+    p.translate(0, H / 2 + 10);
+    for (let i = 0; i < 8000; i++) {
+      const wx = p.random(0, W);
+      p.point(wx, Math.cos((wx / W) * p.PI * 80) * 20 + p.random(30, 50));
     }
-    pop();
+    p.pop();
 
-    // wave yellow
-    push();
-    stroke(224, 49, 0);
-    translate(0, height / 2);
-    var amp = 20;
-    for (var i = 0; i < 6000; i++) {
-        var waveX = random(2, width);
-        var waveY = cos((waveX / width) * PI * 2) * amp;
-        waveY += random(80, 10);
-        point(waveX, waveY);
+    // wave red
+    p.push();
+    p.stroke(224, 49, 0);
+    p.translate(0, H / 2);
+    for (let i = 0; i < 6000; i++) {
+      const wx = p.random(2, W);
+      p.point(wx, Math.cos((wx / W) * p.PI * 2) * 20 + p.random(10, 80));
     }
-    pop();
+    p.pop();
+  };
+
+  p.windowResized = function () {
+    p.resizeCanvas(p.windowWidth, p.windowHeight);
+  };
 }
